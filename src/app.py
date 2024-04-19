@@ -25,15 +25,14 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
-#if using Atlas database uncomment next line!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#client = pymongo.MongoClient(os.getenv("MONGO_URI"))
+#if using Atlas database uncomment next line!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! and comment out the next four lines
+client = pymongo.MongoClient(os.getenv("MONGO_URI"))
 
 #if using containerized instance of mongo uncomment next 4 lines else comment them out
-root_username = os.environ["MONGO_INITDB_ROOT_USERNAME"]
-root_password = os.environ["MONGO_INITDB_ROOT_PASSWORD"]
-uri = f"mongodb://{root_username}:{root_password}@db:27017/db?authSource=admin"
-client = pymongo.MongoClient(uri)
+#root_username = os.environ["MONGO_INITDB_ROOT_USERNAME"]  #1
+#root_password = os.environ["MONGO_INITDB_ROOT_PASSWORD"]  #2
+#uri = f"mongodb://{root_username}:{root_password}@mongodb:27017/db?authSource=admin" #3
+#client = pymongo.MongoClient(uri) #4
 
 db = client[os.getenv("MONGO_DBNAME")]  # store a reference to the database
 
@@ -240,8 +239,8 @@ def unauthorized_handler():
 # run the app
 if __name__ == "__main__":
     # use the PORT environment variable, or default to 5000
-    FLASK_PORT = os.getenv("FLASK_PORT", "5000")
+    FLASK_PORT = os.getenv("FLASK_PORT", "5001")
 
     # import logging
     # logging.basicConfig(filename='/home/ak8257/error.log',level=logging.DEBUG)
-    app.run(port=FLASK_PORT)
+    app.run(host="0.0.0.0", port=FLASK_PORT)
