@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+
+{% block container %}
+<div class="item">
+  <div class="item-image">
+    <img
+      src="{{ founditem.image_url }}"
+      alt="{{ founditem.name }}"
+      referrerpolicy="no-referrer"
+    />
+  </div>
+  <div id="item-content">
+    <div id="item-primary">
+      <p>{{ founditem.name }}</p>
+      <p>${{ founditem.price }}</p>
+    </div>
+    <div id="item-details">
+      <p><strong>Description: </strong>{{ founditem.description }}</p>
+      <p>Sold By: {{ founditem.username }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
