@@ -301,6 +301,8 @@ def rejectoffer(offer_id):
 def purge(item_id):
     query = {"offereditems": item_id}
     db.offers.delete_many(query)
+    query2 = {"offerforid": item_id}
+    db.offers.delete_many(query2)
     return redirect(url_for("view_listings"))
 
 @login_manager.unauthorized_handler
