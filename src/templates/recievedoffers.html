@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block container %}
+<div>
+  <a>Offers Recieved</a>
+</div>
+<div>
+  {% for doc in docs %}
+  <div class="listing-alt">
+    <a>Offered for item {{doc.offerforid}}</a>
+    <b>{{doc.status}}</b>
+  </div>
+  <div class="item-buttons">
+    <a href="{{url_for('rejectoffer', offer_id = doc._id)}}">Reject Offer</a>
+    <br />
+    <a href="{{url_for('acceptoffer', offer_id = doc._id)}}">Accept Offer</a>
+  </div>
+  {%endfor%}
+</div>
+
+{% endblock %}

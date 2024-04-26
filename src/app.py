@@ -17,7 +17,7 @@ from bson.objectid import ObjectId #used to search db using objec ids
 load_dotenv()  # take environment variables from .env.
 
 # instantiate the app
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv("SECRET_KEY")
 
 bcrypt = Bcrypt(app) 
@@ -92,13 +92,13 @@ def home():
     sort_option = request.args.get('sort')
 
     if sort_option == 'oldest':
-        docs_cursor = db.items.find({}).sort("created_at", 1)
+        docs_cursor = db.items.find({"public": True}).sort("created_at", 1)
     elif sort_option == 'lowest':
-        docs_cursor = db.items.find({}).sort("price", 1)
+        docs_cursor = db.items.find({"public": True}).sort("price", 1)
     elif sort_option == 'highest':
-        docs_cursor = db.items.find({}).sort("price", -1)
+        docs_cursor = db.items.find({"public": True}).sort("price", -1)
     else:
-        docs_cursor = db.items.find({}).sort("created_at", -1)
+        docs_cursor = db.items.find({"public": True}).sort("created_at", -1)
     
     docs = list(docs_cursor)
     return render_template("index.html", docs=docs)  # render the hone template
@@ -166,7 +166,9 @@ def logout():
 def item(item_id):
     try:
         founditem = db.items.find_one({'_id': ObjectId(item_id)})
-        return render_template("item.html", founditem = founditem)
+        userid = flask_login.current_user.id
+        user = db.users.find_one({"_id":ObjectId(userid)})
+        return render_template("item.html", founditem = founditem, user = user)
     except:
         return redirect(url_for('home')) #redirect to an error page ideally
 
@@ -192,7 +194,7 @@ def create_item(user_id):
     desc = request.form["description"]
     price = Decimal128(request.form["price"])
     url = request.form["url"]
-    item = {"name": name,  "description" :desc, "user":ObjectId(user_id),"username":username, "image_url":url, "price": price, "created_at": datetime.datetime.utcnow()}
+    item = {"name": name,  "description" :desc, "user":ObjectId(user_id),"username":username, "image_url":url, "price": price, "created_at": datetime.datetime.utcnow(), "public": True}
     db.items.insert_one(item)
     return redirect(url_for('view_listings'))
 
@@ -202,8 +204,12 @@ def create_item(user_id):
 def delete(item_id):
         db.items.delete_one({"_id": ObjectId(item_id)})
         #TODO can redirect to the my listings page later
-        return redirect(url_for('view_listings'))
-
+        return redirect(url_for('purge', item_id = item_id))
+@app.route("/deleteoffer/<offer_id>")
+@flask_login.login_required
+def deleteoffer(offer_id):
+    db.offers.delete_one({"_id": ObjectId(offer_id)})
+    return redirect(url_for('sentoffers'))
 @app.route("/edit/<item_id>")
 @flask_login.login_required
 def edit(item_id):
@@ -228,8 +234,76 @@ def view_listings():
     user_to_find = flask_login.current_user.id
     print(user_to_find)
     items = list(db.items.find({"user": ObjectId(user_to_find)}))
-    return render_template("viewlistings.html", docs = items)
+    return render_template("viewlisting.html", docs = items)
 
+@app.route("/setpublic/<item_id>")
+@flask_login.login_required
+def setpublic(item_id):
+    item = {"public":True}
+    db.items.update_one({"_id": ObjectId(item_id)}, {"$set": item})
+    return redirect(url_for('view_listings'))
+
+@app.route("/setprivate/<item_id>")
+@flask_login.login_required
+def setprivate(item_id):
+    item = {"public":False}
+    db.items.update_one({"_id": ObjectId(item_id)}, {"$set": item})
+    return redirect(url_for('view_listings'))
+@app.route("/offer/<item_id>")
+@flask_login.login_required
+def offer(item_id):
+    founditem = db.items.find_one({'_id': ObjectId(item_id)})
+    user_to_find = flask_login.current_user.id
+    items = list(db.items.find({"user": ObjectId(user_to_find)}))
+    return render_template("offer.html", founditem = founditem, item_id = item_id, docs=items)
+
+
+@app.route("/newoffer/<item_id>", methods= ["GET", "POST"])
+@flask_login.login_required
+def new_offer(item_id):
+    offered = request.form.getlist("mycheckbox")
+    touser = db.items.find_one({"_id": ObjectId(item_id)}).get('user')
+
+    curuser = flask_login.current_user.id
+    offer = {"offerforid": item_id, "offereditems" : offered, "sentby": ObjectId(curuser) ,"status": "sent", "sendtouser": touser}
+    db.offers.insert_one(offer)
+    return redirect(url_for('sentoffers'))
+
+@app.route("/sentoffers")
+@flask_login.login_required
+def sentoffers():
+    curuser = flask_login.current_user.id
+    offers = list(db.offers.find({"sentby": ObjectId(curuser)}))
+    return render_template("sentoffers.html", docs = offers)
+@app.route("/recievedoffers")
+@flask_login.login_required
+def recievedoffers():
+    curuser = flask_login.current_user.id
+    offers = list(db.offers.find({"sendtouser": ObjectId(curuser)}))
+    return render_template("recievedoffers.html", docs = offers)
+
+@app.route("/acceptoffer/<offer_id>")
+@flask_login.login_required
+def acceptoffer(offer_id):
+    item = {"status":"accepted"}
+    db.offers.update_one({"_id": ObjectId(offer_id)}, {"$set": item})
+    return redirect(url_for('recievedoffers'))
+
+@app.route("/rejectoffer/<offer_id>")
+@flask_login.login_required
+def rejectoffer(offer_id):
+    item = {"status":"rejected"}
+    db.offers.update_one({"_id": ObjectId(offer_id)}, {"$set": item})
+    return redirect(url_for('recievedoffers'))
+
+@app.route("/purge/<item_id>")
+@flask_login.login_required
+def purge(item_id):
+    query = {"offereditems": item_id}
+    db.offers.delete_many(query)
+    query2 = {"offerforid": item_id}
+    db.offers.delete_many(query2)
+    return redirect(url_for("view_listings"))
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():

@@ -1,6 +1,4 @@
-{% extends 'base.html' %} 
-
-{% block container %}
+{% extends 'base.html' %} {% block container %}
 <div class="item">
   <div class="item-image">
     <img
@@ -17,7 +15,10 @@
     <div id="item-details">
       <p><strong>Description: </strong>{{ founditem.description }}</p>
       <p>Sold By: {{ founditem.username }}</p>
+      {%if user.username != founditem.username%}
+      <a href="{{url_for('offer', item_id = founditem._id)}}">Make Offer</a>
+      {%endif%}
     </div>
   </div>
 </div>
-{% endblock %}
+{%endblock%}
