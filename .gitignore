@@ -1,3 +1,7 @@
+#environment variables
+.env
+src/.env
+
 # mac junk
 .DS_Store
 
