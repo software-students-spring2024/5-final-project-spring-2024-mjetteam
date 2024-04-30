@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 pytest = "*"
+flask = "*"
+pymongo = "*"
+python-dotenv = "*"
+flask-login = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 
