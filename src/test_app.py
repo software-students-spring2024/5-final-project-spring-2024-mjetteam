@@ -22,11 +22,10 @@ def user():
     with app.test_client() as client:
         yield client
 
-
 def test_index_page__not_logged_in(client):
     res = client.get('/')
     assert res.status_code == 401
-    
+
 def test_index_page__logged_in(client):
     client.post('/login', data=dict(username='marc1', password='password'))
     response = client.get('/')
