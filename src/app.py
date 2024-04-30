@@ -118,7 +118,7 @@ def sign_up():
             return render_template("signup.html", error="Username already in use.")
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
-            new_user = {'username': username, 'password': hashed_password, 'items': []}
+            new_user = {'username': username, 'password': hashed_password, 'items': [], 'bio':"", 'pic': "https://i.imgur.com/xCvzudW.png"}
             db.users.insert_one(new_user)
             return redirect(url_for("log_in"))
     if flask_login.current_user.is_authenticated:
@@ -169,7 +169,8 @@ def item(item_id):
         userid = flask_login.current_user.id
         user = db.users.find_one({"_id":ObjectId(userid)})
         return render_template("item.html", founditem = founditem, user = user)
-    except:
+    except Exception as e:
+        print(e)
         return redirect(url_for('home')) #redirect to an error page ideally
 
 #add item here
@@ -304,6 +305,48 @@ def purge(item_id):
     query2 = {"offerforid": item_id}
     db.offers.delete_many(query2)
     return redirect(url_for("view_listings"))
+
+@app.route("/profile")
+@flask_login.login_required
+def profile():
+    user_to_find = flask_login.current_user.id
+    user = db.users.find_one({"_id": ObjectId(user_to_find)})
+    
+    user_profile = {"username":user["username"], "bio":user["bio"], "pic": user["pic"]}
+    user_items = list(db.items.find({"user": ObjectId(user_to_find)}))
+    return render_template("viewProfile.html", user = user_profile, docs = user_items)
+
+@app.route("/viewUser/<user_id>", methods= ["GET"])
+@flask_login.login_required
+def view_user(user_id):
+    user = db.users.find_one({"username": user_id})
+    print(user["_id"])
+    print(flask_login.current_user.id)
+    print(user["_id"] == flask_login.current_user.id)
+    if user["_id"] == flask_login.current_user.id:
+        return redirect(url_for("profile"))
+    user_profile = {"username":user["username"], "bio":user["bio"], "pic": user["pic"]}
+    user_items = list(db.items.find({"user": ObjectId(user["_id"])}))
+    return render_template("viewUserProfile.html", user = user_profile, docs = user_items)
+
+@app.route("/editProfile/", methods= ["GET","POST"])
+@flask_login.login_required
+def edit_profile():
+    if request.method == "POST":
+        bio = request.form["bio"]
+        pic = request.form["pic"]
+        db.users.update_one({'_id': ObjectId(flask_login.current_user.id)},
+        {
+            '$set': {
+              'bio': bio,
+              'pic':pic
+        }})
+        return redirect(url_for('profile'))
+    user = db.users.find_one({"_id": ObjectId(flask_login.current_user.id)})
+    return render_template("editProfile.html", user = user)
+
+
+
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
