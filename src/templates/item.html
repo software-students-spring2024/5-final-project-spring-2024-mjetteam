@@ -14,7 +14,7 @@
     </div>
     <div id="item-details">
       <p><strong>Description: </strong>{{ founditem.description }}</p>
-      <p>Sold By: {{ founditem.username }}</p>
+      <p>Sold By: <a href="{{url_for('view_user', user_name = founditem.username)}}">{{ founditem.username }}</a></p>
       {%if user.username != founditem.username%}
       <a href="{{url_for('offer', item_id = founditem._id)}}">Make Offer</a>
       {%endif%}
