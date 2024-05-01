@@ -2,18 +2,22 @@
 
 <div id="profile">
   <div id="profile-header">
-    <img
-      src="{{user.pic}}"
-      alt="user profile image"
-      width="80px"
-      height="80px"
-      referrerpolicy="no-referrer"
-    />
-    <b>{{user.username}}</b>
-    <p>Bio: {{user.bio}}</p>
-    <a href="{{url_for('edit_profile')}}"
-    ><button class="edit-profile-btn">Edit Profile</button></a
-  >
+    <div>
+      <img
+        src="{{user.pic}}"
+        alt="user profile image"
+        width="100px"
+        height="100px"
+        referrerpolicy="no-referrer"
+      />
+      <div class="profile-username">{{user.username}}</div>
+    </div>
+    <div>
+      <div>{{user.bio}}</div>
+      <a href="{{url_for('edit_profile')}}">
+        <button class="edit-profile-btn">Edit Profile</button>
+      </a>
+    </div>
   </div>
 </div>
 
