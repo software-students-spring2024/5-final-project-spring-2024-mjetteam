@@ -68,7 +68,7 @@ def test_home(client):
 
 def test_logout(client, user, login):
     res = client.get('/logout')
-    assert res.status_code == 200
+    assert res.status_code == 302
 
 def test_item(client, user, login):
     res = client.get(f"/item/<{ITEM_ID}>")
@@ -113,7 +113,7 @@ def test_set_public(client):
 
 def test_set_private(client):
     response = client.get("/setprivate/<item_id>")
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 def test_offer(client):
     response = client.get('/')
