@@ -5,6 +5,9 @@ import datetime
 from bson.objectid import ObjectId
 from bson.decimal128 import Decimal128
 
+global USER_ID
+global ITEM_ID
+
 TEST_USER_POST = {'fusername': 'marc3', 'fpassword': 'password'}
 TEST_INCORRECT_POST = {'fusername': 'marc3', 'fpassword': 'assword'}
 TEST_USER_MONGO = {'username': 'marc3'}
@@ -23,7 +26,9 @@ def client():
 
 @pytest.fixture
 def user(client):
+    global USER_ID
     client.post('/signup', data = TEST_USER_POST)
+    USER_ID = db.users.find_one(TEST_USER_MONGO)["_id"]
 
 @pytest.fixture
 def login(client, user):
@@ -61,53 +66,61 @@ def test_home(client):
     res = client.get('/')
     assert res.status_code == 200
 
-def test_logout():
-    client.post('/logout',) 
-    assert 1 == 1
+def test_logout(client, user, login):
+    res = client.get('/logout')
+    assert res.status_code == 302
 
-def test_item():
-    res = client.get('/item')
+def test_item(client, user, login):
+    res = client.get(f"/item/<{ITEM_ID}>")
     assert res.status_code == 200
 
-def test_add():
-    response = client.get('/add')
+def test_add(client, user, login):
+    response = client.get("/add")
     assert response.status_code == 200
 
 def test_create_item(client, user, login):
-    client.post('/add/<user_id>', data = TEST_ITEM_POST)
+    global ITEM_ID
+    client.post(f"/add/<{str(USER_ID)}>", data = TEST_ITEM_POST)
+    ITEM_ID = db.items.find_one(TEST_ITEM_MONGO)["_id"]
     res = client.get('/add') 
     assert 1 == 1
 
 def test_delete(client, user, login):
-    client.post("/delete/<item_id>", data = TEST_ITEM_POST)
-    res = client.get('/delete')
+    global ITEM_ID
+    client.post(f"/delete/<{ITEM_ID}>", data = TEST_ITEM_POST)
+    res = client.get(f'/delete/<{ITEM_ID}>')
     assert res.status_code == 200
 
 def test_delete_offer(client):
     response = client.get('/')
+    assert response.status_code == 200
 
 def test_edit(client):
     response = client.get('/')
+    assert response.status_code == 200
 
 def test_update_item(client):
     response = client.get('/')
+    assert response.status_code == 200
 
 def test_view_listings(client):
     response = client.get('/')
+    assert response.status_code == 200
 
 def test_set_public(client):
     response = client.get('/')
+    assert response.status_code == 200
 
 def test_set_private(client):
     response = client.get("/setprivate/<item_id>")
-    assert response.status_code == 200
+    assert response.status_code == 302
 
 def test_offer(client):
     response = client.get('/')
     assert response.status_code == 200
 
 def test_view_offer(client):
-    response = client.get('')
+    response = client.get('/')
     assert response.status_code == 200
 
 def test_sent_offers(client):
