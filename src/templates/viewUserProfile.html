@@ -10,6 +10,11 @@
   />
   <p>Username: {{user.username}}</p>
   <p>Bio: {{user.bio}}</p>
+  {%if friends == True%}
+  <button class="friends-tag">Friends</button>
+  {%else%}
+  <a href="{{url_for('add_friend', user_name = user.username)}}"><button class="edit-profile-btn">Add Friend</button></a>
+  {% endif %}
 </div>
 
 <div id="listings">
