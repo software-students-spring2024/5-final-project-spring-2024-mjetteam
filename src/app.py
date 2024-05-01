@@ -309,7 +309,6 @@ def purge(item_id):
 def unauthorized_handler():
     return redirect(url_for('log_in'))
 
-
 # run the app
 if __name__ == "__main__":
     # use the PORT environment variable, or default to 5000
