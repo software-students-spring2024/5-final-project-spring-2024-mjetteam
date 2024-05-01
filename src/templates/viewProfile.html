@@ -11,6 +11,7 @@
   <p>Username: {{user.username}}</p>
   <p>Bio: {{user.bio}}</p>
   <a href = "{{url_for('edit_profile')}}"><button class="edit-profile-btn">Edit Profile</button></a>
+
 </div>
 
 <div id="listings">
@@ -36,7 +37,6 @@
         <p>{{ doc.description }}</p>
       </div>
     </div>
-  </div>
-  {% endif %} {% endfor %} {% endif %}
+  </div> {% endif %} {% endfor %} {% endif %}
 </div>
 {% endblock %}

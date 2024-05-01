@@ -430,6 +430,12 @@ form div input {
   justify-content: center;
 }
 
+#profile img{
+  border-radius: 40%;
+  float: left;
+  margin-right: 1em;
+}
+
 .edit-profile-pic{
   display: block;
   margin: auto;
@@ -450,9 +456,49 @@ form div input {
 }
 
 .edit-profile-btn:hover{
- text-decoration: underline white;
- border: black 1px solid;
- background-color: #6502a7;
+ border:#56018D solid 1px;
+ background-color: white;
+ color: #56018D;
+}
+
+.edit-profile-btn:active{
+  border:#56018D solid 1px;
+  background-color: #56018D;
+  color: white;
+ }
+
+.friends-tag{
+  text-align: center;
+  box-sizing: border-box;
+  background-color: white;
+  color:#56018D;
+  text-decoration: none;
+  padding: 0.4rem;
+  border: #56018D 1px solid;
+  border-radius: 10px;
+
+  pointer-events: none;
+}
+
+#friends{
+  margin: 1em;
+}
+.friend-listing{
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  border: #56018D solid 2px;
+  border-radius: 10px;
+  padding: 1em;
+  margin: 1em;
+}
+.friend-user{
+  font-size: 2em;
+  color: #56018D;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.friend-image img{
+  border-radius: 50%;
 }
 
 @media (min-width: 600px) {

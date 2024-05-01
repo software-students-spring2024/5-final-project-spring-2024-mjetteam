@@ -118,7 +118,7 @@ def sign_up():
             return render_template("signup.html", error="Username already in use.")
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') 
-            new_user = {'username': username, 'password': hashed_password, 'items': [], 'bio':"", 'pic': "https://i.imgur.com/xCvzudW.png"}
+            new_user = {'username': username, 'password': hashed_password, 'items': [], 'bio':"", 'pic': "https://i.imgur.com/xCvzudW.png", 'friends': []}
             db.users.insert_one(new_user)
             return redirect(url_for("log_in"))
     if flask_login.current_user.is_authenticated:
@@ -316,18 +316,27 @@ def profile():
     user_items = list(db.items.find({"user": ObjectId(user_to_find)}))
     return render_template("viewProfile.html", user = user_profile, docs = user_items)
 
-@app.route("/viewUser/<user_id>", methods= ["GET"])
+@app.route("/viewUser/<user_name>", methods= ["GET"])
 @flask_login.login_required
-def view_user(user_id):
-    user = db.users.find_one({"username": user_id})
-    print(user["_id"])
-    print(flask_login.current_user.id)
-    print(user["_id"] == flask_login.current_user.id)
+def view_user(user_name):
+    #gets the other user profile 
+    user = db.users.find_one({"username": user_name})
     if user["_id"] == flask_login.current_user.id:
         return redirect(url_for("profile"))
     user_profile = {"username":user["username"], "bio":user["bio"], "pic": user["pic"]}
     user_items = list(db.items.find({"user": ObjectId(user["_id"])}))
-    return render_template("viewUserProfile.html", user = user_profile, docs = user_items)
+    #checks if user is in logged in user's friends
+    logged_in_user = db.users.find_one({'_id': ObjectId(flask_login.current_user.id)})
+    print(list(logged_in_user["friends"]))
+    logged_in_user_friends = list(logged_in_user["friends"])
+    if user["_id"] in logged_in_user_friends:
+        friends = True
+        print("true")
+    else:
+        friends = False
+        print("false")
+
+    return render_template("viewUserProfile.html", user = user_profile, docs = user_items, friends=friends)
 
 @app.route("/editProfile/", methods= ["GET","POST"])
 @flask_login.login_required
@@ -344,6 +353,38 @@ def edit_profile():
         return redirect(url_for('profile'))
     user = db.users.find_one({"_id": ObjectId(flask_login.current_user.id)})
     return render_template("editProfile.html", user = user)
+
+
+@app.route("/addFriend/<user_name>", methods= ["GET"])
+@flask_login.login_required
+def add_friend(user_name):
+    user = db.users.find_one({"username": user_name})
+    logged_in_user = db.users.find_one({'_id': ObjectId(flask_login.current_user.id)})
+    logged_in_user_friends = list(logged_in_user['friends'])
+    if user['_id'] in logged_in_user_friends:
+        return redirect(url_for('view_user',user_name=user_name ))
+    
+    db.users.update_one({ '_id': ObjectId(flask_login.current_user.id) },{ '$push': { 'friends': user['_id']}})
+    return redirect(url_for('view_user',user_name=user_name ))
+
+@app.route("/friends", methods= ["GET"])
+@flask_login.login_required
+def friends():
+    user = db.users.find_one({"_id": ObjectId(flask_login.current_user.id)})
+    friends_list = list(user['friends'])
+    print(friends_list)
+    friends =[]
+    for friend in friends_list:
+        current_friend = db.users.find_one({'_id': ObjectId(friend)})
+        print(current_friend["username"])
+        friend_info = {
+            "pic":current_friend["pic"],
+            "username":current_friend["username"],
+        }
+        friends.append(friend_info)
+    print(friends)
+    return render_template('friends.html', friends=friends)
+    
 
 
 
