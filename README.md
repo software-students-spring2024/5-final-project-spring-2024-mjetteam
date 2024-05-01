@@ -17,6 +17,9 @@ Based on our second project, the new and revised CampusSwap implements several n
 - [Marc Etter](https://github.com/Morcupine)
 - [Johan Gallardo](https://github.com/JohanGallardo)
 
+# Contributors
+Link to our Docker [Image](https://hub.docker.com/repository/docker/johangallardo/campus-swap/general) hosted on Dockerhub
+
 # How to Run
 
 Create and navigate to local repository. Then run command below, which removes any containers whose ports are needed.
