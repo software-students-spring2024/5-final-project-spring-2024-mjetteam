@@ -27,13 +27,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # if using Atlas database uncomment next line!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! and comment out the next four lines
-client = pymongo.MongoClient(os.getenv("MONGO_URI"))
+#client = pymongo.MongoClient(os.getenv("MONGO_URI"))
  
 #if using containerized instance of mongo uncomment next 4 lines else comment them out
-#root_username = os.environ["MONGO_INITDB_ROOT_USERNAME"]  #1
-#root_password = os.environ["MONGO_INITDB_ROOT_PASSWORD"]  #2
-#uri = f"mongodb://{root_username}:{root_password}@mongodb:27017/db?authSource=admin" #3
-#client = pymongo.MongoClient(uri) #4
+root_username = os.environ["MONGO_INITDB_ROOT_USERNAME"]  #1
+root_password = os.environ["MONGO_INITDB_ROOT_PASSWORD"]  #2
+uri = f"mongodb://{root_username}:{root_password}@mongodb:27017/db?authSource=admin" #3
+client = pymongo.MongoClient(uri) #4
 
 db = client[os.getenv("MONGO_DBNAME")]  # store a reference to the database
 
