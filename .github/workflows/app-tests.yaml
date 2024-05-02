@@ -32,6 +32,9 @@ jobs:
 
       - name: Build Docker Image
         run: docker-compose build
+        
+      - name: Remove previous Docker containers
+        run: docker-compose down -v || true
 
       - name: Run Docker Containers
         run: docker-compose up -d
