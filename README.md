@@ -1,3 +1,6 @@
+[![log github events](https://github.com/software-students-spring2024/5-final-project-spring-2024-mjetteam/actions/workflows/event-logger.yml/badge.svg)](https://github.com/software-students-spring2024/5-final-project-spring-2024-mjetteam/actions/workflows/event-logger.yml)
+[![webapp CI/CD](https://github.com/software-students-spring2024/5-final-project-spring-2024-mjetteam/actions/workflows/app-tests.yaml/badge.svg)](https://github.com/software-students-spring2024/5-final-project-spring-2024-mjetteam/actions/workflows/app-tests.yaml)
+
 # CampusSwap Web App
 
 Based on our second project, the new and revised CampusSwap implements several new features to makes the web app more complete and user friendly. CampusSwap allows users to create an account and make listings to other users, making trading items easier between students.
