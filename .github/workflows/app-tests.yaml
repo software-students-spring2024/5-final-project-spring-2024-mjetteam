@@ -43,7 +43,7 @@ jobs:
         run: docker-compose up -d
 
       - name: Run Tests
-        run: docker exec <container_name> pytest
+        run:  docker exec 5-final-project-spring-2024-mjetteam_p5-web-app_1 pytest
 
       - name: Clean up
         if: always()
