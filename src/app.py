@@ -35,7 +35,7 @@ root_password = os.environ["MONGO_INITDB_ROOT_PASSWORD"]  #2
 uri = f"mongodb://{root_username}:{root_password}@mongodb:27017/db?authSource=admin" #3
 client = pymongo.MongoClient(uri) #4
 
-db = client[os.getenv("MONGO_DBNAME")]  # store a reference to the database
+db = client['Cluster0']  # store a reference to the database
 
 # the following try/except block is a way to verify that the database connection is alive (or not)
 try:
