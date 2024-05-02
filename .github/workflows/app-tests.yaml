@@ -27,8 +27,11 @@ jobs:
           echo "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_INITDB_ROOT_USERNAME }}" > .env
           echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
 
-      - name: Remove previous Docker containers
-        run: docker-compose down -v || true
+      - name: Force remove all Docker containers and networks
+        run: |
+          docker rm -f $(docker ps -aq) || true
+          docker network prune -f
+          docker volume prune -f
 
       - name: Check used ports
         run: sudo netstat -tulnp | grep 27017
