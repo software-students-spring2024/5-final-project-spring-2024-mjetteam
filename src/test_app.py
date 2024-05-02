@@ -14,8 +14,8 @@ TEST_USER_MONGO = {'username': 'marc3'}
 db.users.delete_one(TEST_USER_MONGO)
 
 TEST_ITEM_POST = {'itemname': '5555', 'description': '5555', 'price': '555', 'url': '555'}
-TEST_ITEM_MONGO = {'name': '5555', 'description': '5555', 'username': 'marc1', 'image_url': '555', 'price': Decimal128('555')}
-#db.items.delete_one(TEST_ITEM_MONGO)
+TEST_ITEM_MONGO = {'name': '5555'}
+db.items.delete_one(TEST_ITEM_MONGO)
 
 @pytest.fixture
 def client():
@@ -69,41 +69,41 @@ def test_home(client):
 def test_logout(client, user, login):
     res = client.get('/logout')
     assert res.status_code == 302
-
-def test_item(client, user, login):
-    res = client.get(f"/item/<{ITEM_ID}>")
-    assert res.status_code == 200
-
+ 
 def test_add(client, user, login):
     response = client.get("/add")
     assert response.status_code == 200
 
 def test_create_item(client, user, login):
     global ITEM_ID
-    client.post(f"/add/<{str(USER_ID)}>", data = TEST_ITEM_POST)
+    res = client.post(f"/add/{str(USER_ID)}", data = TEST_ITEM_POST)
     ITEM_ID = db.items.find_one(TEST_ITEM_MONGO)["_id"]
-    res = client.get('/add') 
-    assert 1 == 1
+    assert 'You should be redirected automatically to the target URL' in str(res.data)
+
+def test_item(client, user, login):
+    global ITEM_ID
+    res = client.get(f"/item/{str(ITEM_ID)}")
+    assert res.status_code == 200
 
 def test_delete(client, user, login):
     global ITEM_ID
-    client.post(f"/delete/<{ITEM_ID}>", data = TEST_ITEM_POST)
-    res = client.get(f'/delete/<{ITEM_ID}>')
-    assert res.status_code == 200
+    client.post(f"/delete/{str(ITEM_ID)}", data = TEST_ITEM_POST)
+    res = client.get(f'/delete/{str(ITEM_ID)}')
+    assert 'You should be redirected automatically to the target URL' in str(res.data)
 
-def test_delete_offer(client):
+def test_delete_offer(client, user, login):
     response = client.get('/')
     assert response.status_code == 200
 
-def test_edit(client):
+def test_edit(client, user, login):
     response = client.get('/')
     assert response.status_code == 200
 
-def test_update_item(client):
+def test_update_item(client, user, login):
     response = client.get('/')
     assert response.status_code == 200
 
-def test_view_listings(client):
+def test_view_listings(client, user, login):
     response = client.get('/')
     assert response.status_code == 200
 
@@ -144,5 +144,5 @@ def test_unauthorized_handler(client):
     assert response.status_code == 200
 
 db.users.delete_one(TEST_USER_MONGO)
-#db.items.delete_one(TEST_ITEM_MONGO)
+db.items.delete_one(TEST_ITEM_MONGO)
 pytest.main()
