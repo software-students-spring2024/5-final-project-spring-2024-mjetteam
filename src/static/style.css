@@ -187,6 +187,7 @@ footer {
 
 .listing {
   height: 350px;
+  width: 366px;
   border: 3px solid #56018d;
   box-sizing: border-box;
   border-radius: 1rem;
@@ -196,6 +197,10 @@ footer {
 .listing-image {
   height: 250px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #cacaca;
 }
 
 .listing img {
@@ -216,11 +221,17 @@ footer {
   align-items: center;
   height: 20px;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.details-primary > p {
+  height: 20px;
+  max-width: 200px;
+  overflow: hidden;
 }
 
 .details > p {
-  height: 38px;
+  height: 40px;
   overflow: hidden;
 }
 
@@ -515,6 +526,11 @@ form div label {
 #friends {
   margin: 1em;
 }
+
+#friends a {
+  text-decoration: none;
+}
+
 .friend-listing {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -522,7 +538,9 @@ form div label {
   border-radius: 10px;
   padding: 1em;
   margin: 1em;
+  align-items: center;
 }
+
 .friend-user {
   font-size: 2em;
   color: #56018d;
@@ -589,14 +607,11 @@ form div label {
   flex-direction: column;
   align-items: center;
   min-height: 80vh;
-  gap: 1rem;
-  padding: 1rem 0rem 0rem 0rem;
 }
 
 .offer-sent {
   box-sizing: border-box;
   width: 100%;
-  border-top: 3px solid #56018d;
   border-bottom: 3px solid #56018d;
 }
 
@@ -605,6 +620,7 @@ form div label {
   height: 150px;
   display: flex;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
   border: 3px solid #56018d;
   border-radius: 16px;
@@ -622,7 +638,7 @@ form div label {
 
 .offer-sent img {
   height: 100%;
-  width: 100px;
+  width: 100%;
 }
 
 .offer-content {
@@ -634,7 +650,7 @@ form div label {
 
 .item-wanted {
   width: 183px;
-  height: 180px;
+  height: 150px;
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
@@ -642,7 +658,7 @@ form div label {
 
 .swap-icon {
   width: 60px;
-  height: 96px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -655,7 +671,7 @@ form div label {
 
 .items-offered {
   width: 183px;
-  height: 120px;
+  height: 150px;
 }
 
 
@@ -698,12 +714,11 @@ form div label {
 
 .item-buttons-alt {
   display: flex;
-  justify-content: space-evenly;
-  margin: 1rem;
+  justify-content: center;
 }
 
 .item-buttons-alt a{
-  width: 45%;
+  width: 33%;
   text-align: center;
   box-sizing: border-box;
   background-color: #56018d;
@@ -712,6 +727,7 @@ form div label {
   cursor: pointer;
   padding: 0.75rem;
   border-radius: 0.5rem;
+  margin: 1rem;
 }
 
 #browse {

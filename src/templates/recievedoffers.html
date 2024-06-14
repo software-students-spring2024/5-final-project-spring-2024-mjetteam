@@ -23,9 +23,9 @@
   </div>
   {% else %} {% for offer in offers %}
   <div class="offer-sent">
-    <div class="offer-header">
-      <div>Your Item</div>
-      <div>Their Item(s)</div>
+    <div class="offer-header" style="margin: 1rem 1rem calc(1rem * {{ offer.offereditems|length }}) 1rem;">
+      <div>{{offer.offerforid.username|capitalize}}'s Item</div>
+      <div>Your Item{% if offer.offereditems|length > 1 %}s{% endif %}</div>
     </div>
 
     <div class="offer-content">
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <div class="item-buttons">
+    <div class="item-buttons-alt">
       <a href="{{url_for('rejectoffer', offer_id = offer._id)}}"
         >Reject Offer</a
       >

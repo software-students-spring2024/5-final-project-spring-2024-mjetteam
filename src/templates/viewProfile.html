@@ -27,7 +27,7 @@
   {% else %} {% for doc in docs %} {% if doc.public == True %}
   <div class="listing-alt" onclick="window.location.href='/item/{{ doc._id }}'">
     <div class="listing-context-alt">
-      <div class="listing-alt-image">
+      <div class="listing-image-alt">
         <img
           src="{{ doc.image_url }}"
           alt="{{ doc.title }}"
